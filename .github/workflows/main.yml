@@ -1,0 +1,32 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node: ['16.x', '18.x']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Use Node ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: ⚒ Install deps
+        run: yarn install --frozen-lockfile
+
+      - name: 🔎 Lint
+        run: yarn lint
+
+      - name: 🧪 Test
+        run: yarn test:ci --coverage --maxWorkers=2
+
+      - name: ⚙️ Build
+        run: yarn build

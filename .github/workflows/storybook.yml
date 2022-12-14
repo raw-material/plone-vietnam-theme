@@ -1,0 +1,24 @@
+name: Storybook
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout
+        uses: actions/checkout@v2.3.1
+
+      - name: ⚒ Install deps
+        run: yarn install --frozen-lockfile
+
+      - name: ⚙️ Build storybook
+        run: yarn build-storybook
+
+      - name: 🚀 Deploy
+        uses: JamesIves/github-pages-deploy-action@3.6.2
+        with:
+          branch: gh-pages
+          folder: storybook-static
